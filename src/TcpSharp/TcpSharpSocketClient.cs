@@ -222,11 +222,7 @@ public class TcpSharpSocketClient
         // 
 
         IPAddress serverIPAddress;
-        if (IPAddress.TryParse(Host, out serverIPAddress))
-        {
-
-        }
-        else
+        if (!IPAddress.TryParse(Host, out serverIPAddress))
         {
             var serverIPHost = Dns.GetHostEntry(Host);
             if (serverIPHost.AddressList.Length == 0) throw new Exception("Unable to solve host address");
