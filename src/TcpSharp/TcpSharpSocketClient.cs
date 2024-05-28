@@ -218,11 +218,17 @@ public class TcpSharpSocketClient
 
         // Get Host IP Address that is used to establish a connection  
         // In this case, we get one IP address of localhost that is IP : 127.0.0.1  
-        // If a host has multiple addresses, you will get a list of addresses  
-        var serverIPHost = Dns.GetHostEntry(Host);
-        if (serverIPHost.AddressList.Length == 0) throw new Exception("Unable to solve host address");
-        var serverIPAddress = serverIPHost.AddressList[0];
-        if (serverIPAddress.ToString() == "::1") serverIPAddress = new IPAddress(16777343); // 127.0.0.1
+        // If a host has multiple addresses, you will get a list of addresses
+        // 
+
+        IPAddress serverIPAddress;
+        if (!IPAddress.TryParse(Host, out serverIPAddress))
+        {
+            var serverIPHost = Dns.GetHostEntry(Host);
+            if (serverIPHost.AddressList.Length == 0) throw new Exception("Unable to solve host address");
+            serverIPAddress = serverIPHost.AddressList[0];
+            if (serverIPAddress.ToString() == "::1") serverIPAddress = new IPAddress(16777343); // 127.0.0.1
+        }
         var serverIPEndPoint = new IPEndPoint(serverIPAddress, Port);
 
         // Create a TCP/IP  socket.    
